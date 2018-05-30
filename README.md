@@ -38,3 +38,4 @@ FORMULARIO DE INTERACCION
 	-¿Interacción con visualización de datos?		    N
 	-Caso de prueba ¿En qué navegadores probó su proyecto?	
 	
+	    En chrome, en firefox y en explorer
