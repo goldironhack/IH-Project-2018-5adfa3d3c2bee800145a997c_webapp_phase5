@@ -30,8 +30,8 @@
               <p>affordable district to live</p>
             </div>
             <ul class="nav navbar-nav">
-              <li class="active"><button id="botonTop3" type="button" class="btn boton">Top 3 districts</button></li>
-              <li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" href="#">Top 10 districts<span class="caret"></span></a>
+              <li class="active"><button id="botonTop3" type="button" class="btn boton">Top 3: Security,Affordability,Distance</button></li>
+              <li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" href="#">Top 10 parameters<span class="caret"></span></a>
                 <ul class="dropdown-menu">
                   <li><button type="button" class="btn">Parameter 1</button></li>
                   <li><button type="button" class="btn">Parameter 2</button></li>
@@ -40,7 +40,7 @@
                 </ul>
               </li>
               <li><button id='botonShow' type="button" class="btn boton" style="
-    margin-left: 390px; font-weight: 700 !important; 
+    margin-left: 220px; font-weight: 700 !important; 
     font-size: 16px !important;">Show Districs</button></li>
               <li><button id="botonCentrar" type="button" class="btn boton clearMap">Center Map</button></li>
             </ul>
@@ -50,9 +50,15 @@
         <!-- Contenido -->
         <div class="contenido">
             <div class="seccionMapa">
-                <div id="mapa">
-                    
-                </div>    
+                <div id="mapa"></div>
+                
+                
+                <div id="tabla">
+                    <table>
+						<thead id="tablaHeader" style="font-weight: 600;"></thead>
+						<tbody id="tablaBody"></tbody>
+					</table>       
+                </div>
             </div>
         </div>
         
@@ -74,8 +80,10 @@
 	<!-- d3.j -->
 	<script src="https://d3js.org/d3.v4.min.js"></script>
 	
-	<!-- Google Map -->
+	<!-- Google Maps -->
     <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAwWYDB9v1MopiTtPpUXMDaCwAlOQbtn3c&callback=iniciarMapa">
 	</script>
+	
+	<script src="http://maps.googleapis.com/maps/api/js?libraries=geometry&sensor=false"></script>
 </body>
 </html>

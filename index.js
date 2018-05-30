@@ -8,6 +8,7 @@ class distrito{
         this._nCrimenes=0;
         this._distanciaNYU=0;
         this._asequibilidad=0;
+        this._ncasas=0;
     }
     get nombre(){return this._nombre;}
     get latitud(){return this._latitud;}
@@ -15,10 +16,7 @@ class distrito{
     get nCrimenes(){return this._nCrimenes;}
     get distanciaNYU(){return this._distanciaNYU;}
     get asequibilidad(){return this._asequibilidad;}
-    
-    aumentarCrimenes(){
-        this._nCrimenes++;
-    }
+    get ncasas(){return this._ncasas;}
     
     set distanciaNYU(distanciaIngresada){
         this._distanciaNYU=distanciaIngresada;
@@ -28,12 +26,25 @@ class distrito{
         this._asequibilidad=asequibilidadIngresada;
     }
     
+    aumentarCrimenes(){
+        this._nCrimenes++;
+    }
+    
+    aumentarCasas(incremento){
+        this._asequibilidad=parseInt(this._asequibilidad)+parseInt(incremento);
+        this._ncasas++;
+    }
+    
+    calcularAsequibilidad(){
+        this._asequibilidad=(this._asequibilidad/this._ncasas).toFixed(3);
+    }
 }
 
 
                     /*Arreglos para utilizar datos de JSON
 ____________________________________________________________________________*/
 var Json_seguridad = [];
+var Json_asequibilidad = [];
 
 
                     /*Variables utilizadas para el programa
@@ -109,11 +120,11 @@ function iniciarMapa(){
     });
 }
 
-                /*Carga de archivos JSON e inicialización de variables
+                                /*Funciones varias
 ____________________________________________________________________________*/
 $(function(){
     
-    //Datos de seguridad
+    //Recogida de datos de JSON
 	url ='https://data.cityofnewyork.us/resource/9s4h-37hy.json';
 	$.getJSON(url, function(data){
 		$.each(data,function(i,entrada){
@@ -122,8 +133,21 @@ $(function(){
 		console.log('Datos de seguridad cargados');
 	});
 	
+	url1 ='https://data.cityofnewyork.us/resource/q3m4-ttp3.json';
+	$.getJSON(url1, function(data){
+		$.each(data,function(i,entrada){
+			Json_asequibilidad.push(entrada);
+		});
+		console.log('Datos de asequibilidad cargados');
+	});
+	
 });
 
+function calcularDistancia(lat1,long1,lat2,long2){
+    return (google.maps.geometry.spherical.computeDistanceBetween(
+        new google.maps.LatLng(lat1, long1), new google.maps.LatLng(lat2, long2))/1000).toFixed(3);
+    
+}
                         /*Eventos de click en botones
 ____________________________________________________________________________*/
 
@@ -198,27 +222,128 @@ botonTop3.onclick = function(){
                 break;
                 
             default:
-                console.log('Salio otro distrito: ',numeroCiudad)
+                console.log('Salio otro distrito: ',ciudad)
                 break;
         }
 	}
 	
 	//Obtener las distancias entre el centro del distrito y la NYU 
-	var distancia = new google.maps.DistanceMatrixService();
-    distancia.getDistanceMatrix(
-      {
-        origins: [origin1, origin2],
-        destinations: [destinationA, destinationB],
-        travelMode: 'DRIVING',
-        transitOptions: TransitOptions,
-        drivingOptions: DrivingOptions,
-        unitSystem: UnitSystem,
-        avoidHighways: Boolean,
-        avoidTolls: Boolean,
-      }, callback);
-    
-    function callback(response, status) {
-      // See Parsing the Results for
-      // the basics of a callback function.
-    }
+	queens.distanciaNYU=calcularDistancia(queens.latitud,queens.longitud,40.7291,-73.9965);
+	brooklyn.distanciaNYU=calcularDistancia(brooklyn.latitud,brooklyn.longitud,40.7291,-73.9965);
+	manhattan.distanciaNYU=calcularDistancia(manhattan.latitud,manhattan.longitud,40.7291,-73.9965);
+	bronx.distanciaNYU=calcularDistancia(bronx.latitud,bronx.longitud,40.7291,-73.9965);
+	statenIsland.distanciaNYU=calcularDistancia(statenIsland.latitud,statenIsland.longitud,40.7291,-73.9965);
+	
+	//Obtener niveles de asequibilidad
+	for (var i = 0; i < Json_asequibilidad.length; i++) {
+	    var ciudad = Json_asequibilidad[i].borough;
+	    var incremento = Json_asequibilidad[i].extremely_low_income_units;
+	    if(incremento!=0){
+	        switch(ciudad) {
+                case 'Queens':
+                    queens.aumentarCasas(incremento);
+                    break;
+                    
+                case 'Manhattan':
+                    manhattan.aumentarCasas(incremento);
+                    break;
+                    
+                case 'Bronx':
+                    bronx.aumentarCasas(incremento);
+                    break;
+                    
+                case 'Staten Island':
+                    statenIsland.aumentarCasas(incremento);
+                    break;
+                    
+                case 'Brooklyn':
+                    brooklyn.aumentarCasas(incremento);
+                    break;
+                    
+                default:
+                    console.log('Salio otro distrito: ',ciudad)
+                    break;
+            }    
+	    }
+	}
+	queens.calcularAsequibilidad();
+	manhattan.calcularAsequibilidad();
+	bronx.calcularAsequibilidad();
+	statenIsland.calcularAsequibilidad();
+	brooklyn.calcularAsequibilidad();
+	
+	
+	//Encabezado tabla
+	var referenciarTabla = $("#tablaHeader")[0];
+	var nuevaFila = referenciarTabla.insertRow(0);
+	var nombreDistritos = nuevaFila.insertCell(0);
+	var nCrimenes = nuevaFila.insertCell(1);
+	var distanciaDistrito = nuevaFila.insertCell(2);
+	var asequibilidadDistrito = nuevaFila.insertCell(3);
+	nombreDistritos.innerHTML = 'NOMBRE DISTRITO';
+	nCrimenes.innerHTML = 'N. crimenes';
+	distanciaDistrito.innerHTML = 'Distancia a NYU (Km)';
+	asequibilidadDistrito.innerHTML = 'Asequibilidad (%)';
+	
+	//Contenido fila queens
+	referenciarTabla = $("#tablaBody")[0];
+	nuevaFila = referenciarTabla.insertRow(referenciarTabla.rows.length);
+	nombreDistritos = nuevaFila.insertCell(0);
+	nCrimenes = nuevaFila.insertCell(1);
+	distanciaDistrito = nuevaFila.insertCell(2);
+	asequibilidadDistrito = nuevaFila.insertCell(3);
+	nombreDistritos.innerHTML = queens.nombre;
+	nCrimenes.innerHTML = queens.nCrimenes;
+	distanciaDistrito.innerHTML = queens.distanciaNYU;
+	asequibilidadDistrito.innerHTML = queens.asequibilidad;
+	
+	//Contenido fila manhattan
+	referenciarTabla = $("#tablaBody")[0];
+	nuevaFila = referenciarTabla.insertRow(referenciarTabla.rows.length);
+	nombreDistritos = nuevaFila.insertCell(0);
+	nCrimenes = nuevaFila.insertCell(1);
+	distanciaDistrito = nuevaFila.insertCell(2);
+	asequibilidadDistrito = nuevaFila.insertCell(3);
+	nombreDistritos.innerHTML = manhattan.nombre;
+	nCrimenes.innerHTML = manhattan.nCrimenes;
+	distanciaDistrito.innerHTML = manhattan.distanciaNYU;
+	asequibilidadDistrito.innerHTML = manhattan.asequibilidad;
+	
+	//Contenido fila brooklyn
+	referenciarTabla = $("#tablaBody")[0];
+	nuevaFila = referenciarTabla.insertRow(referenciarTabla.rows.length);
+	nombreDistritos = nuevaFila.insertCell(0);
+	nCrimenes = nuevaFila.insertCell(1);
+	distanciaDistrito = nuevaFila.insertCell(2);
+	asequibilidadDistrito = nuevaFila.insertCell(3);
+	nombreDistritos.innerHTML = brooklyn.nombre;
+	nCrimenes.innerHTML = brooklyn.nCrimenes;
+	distanciaDistrito.innerHTML = brooklyn.distanciaNYU;
+	asequibilidadDistrito.innerHTML = brooklyn.asequibilidad;
+	
+	//Contenido fila bronx
+	referenciarTabla = $("#tablaBody")[0];
+	nuevaFila = referenciarTabla.insertRow(referenciarTabla.rows.length);
+	nombreDistritos = nuevaFila.insertCell(0);
+	nCrimenes = nuevaFila.insertCell(1);
+	distanciaDistrito = nuevaFila.insertCell(2);
+	asequibilidadDistrito = nuevaFila.insertCell(3);
+	nombreDistritos.innerHTML = bronx.nombre;
+	nCrimenes.innerHTML = bronx.nCrimenes;
+	distanciaDistrito.innerHTML = bronx.distanciaNYU;
+	asequibilidadDistrito.innerHTML = bronx.asequibilidad;
+	
+	//Contenido fila statenIsland
+	referenciarTabla = $("#tablaBody")[0];
+	nuevaFila = referenciarTabla.insertRow(referenciarTabla.rows.length);
+	nombreDistritos = nuevaFila.insertCell(0);
+	nCrimenes = nuevaFila.insertCell(1);
+	distanciaDistrito = nuevaFila.insertCell(2);
+	asequibilidadDistrito = nuevaFila.insertCell(3);
+	nombreDistritos.innerHTML = statenIsland.nombre;
+	nCrimenes.innerHTML = statenIsland.nCrimenes;
+	distanciaDistrito.innerHTML = statenIsland.distanciaNYU;
+	asequibilidadDistrito.innerHTML = statenIsland.asequibilidad;
+	
+	
 }
