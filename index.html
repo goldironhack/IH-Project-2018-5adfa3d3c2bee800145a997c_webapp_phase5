@@ -2,14 +2,80 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title></title>
+    <title>Find me a safe and affordable district to live</title>
+    
+    <!-- Hoja de estilo CSS Y Bootstrap-->
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    
+    <!-- Hoja de JavaScript y JQuery -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Euphoria+Script|Open+Sans" rel="stylesheet"> 
+    <link href="https://fonts.googleapis.com/css?family=Ubuntu" rel="stylesheet">
+    
+    <!-- Icons-->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 </head>
+
 <body>
     <div class="container">
-        <h1>Hello World!</h1>
-        <button id="btn">Click me</button>
+        <!-- Seccion de barra de navegación -->
+        <nav class="navbar navbar-inverse">
+          <div class="container-fluid">
+            <div class="navbar-header">
+              <p>Find me a safe and </p>
+              <p>affordable district to live</p>
+            </div>
+            <ul class="nav navbar-nav">
+              <li class="active"><button id="botonTop3" type="button" class="btn boton">Top 3 districts</button></li>
+              <li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" href="#">Top 10 districts<span class="caret"></span></a>
+                <ul class="dropdown-menu">
+                  <li><button type="button" class="btn">Parameter 1</button></li>
+                  <li><button type="button" class="btn">Parameter 2</button></li>
+                  <li><button type="button" class="btn">Parameter 3</button></li>
+                  <li><button type="button" class="btn">Parameter 4</button></li>
+                </ul>
+              </li>
+              <li><button id='botonShow' type="button" class="btn boton" style="
+    margin-left: 390px; font-weight: 700 !important; 
+    font-size: 16px !important;">Show Districs</button></li>
+              <li><button id="botonCentrar" type="button" class="btn boton clearMap">Center Map</button></li>
+            </ul>
+          </div>
+        </nav>
+        
+        <!-- Contenido -->
+        <div class="contenido">
+            <div class="seccionMapa">
+                <div id="mapa">
+                    
+                </div>    
+            </div>
+        </div>
+        
+        <!-- Sección contacto -->
+        <div class="contacto">
+            
+            <div class="infoContacto radius">
+                <p class="estiloLetraContacto">Developed by: Esteban Wilches Cardenas | Systems and Computer Engineering Student | National University of Colombia | Software Engineering</p>
+            </div>
+        </div>
     </div>
+    
+    <!--JavaScript-->
     <script src="index.js"></script>
+    
+    <!-- Jquery -->
+	<script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+	
+	<!-- d3.j -->
+	<script src="https://d3js.org/d3.v4.min.js"></script>
+	
+	<!-- Google Map -->
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAwWYDB9v1MopiTtPpUXMDaCwAlOQbtn3c&callback=iniciarMapa">
+	</script>
 </body>
 </html>
